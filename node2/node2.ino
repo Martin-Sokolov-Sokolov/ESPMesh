@@ -1,14 +1,9 @@
-//************************************************************
-// this is a simple example that uses the painlessMesh library
-// 
-// This example shows how to build a mesh with named nodes
-//
-//************************************************************
 #include "namedMesh.h"
 
 #define   MESH_SSID       "prefix"
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5556
+#define ONBOARD_LED  2
 
 Scheduler     userScheduler; // to control your personal task
 namedMesh  mesh;
@@ -25,11 +20,21 @@ void sendMessage() {
 }
 
 void receivedCallback( uint32_t from, String &msg ) {
+  String helper = msg.substring(0, 2);
+  int helper2 = helper.toInt();
+  Serial.print(helper2);
+  if(helper2 > 30) {
+    digitalWrite(ONBOARD_LED, HIGH);
+  }
+  else {
+    digitalWrite(ONBOARD_LED, LOW);
+  }
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
 }
 
 void setup() {
   Serial.begin(9600);
+  pinMode(ONBOARD_LED,OUTPUT);
 
   mesh.setDebugMsgTypes(ERROR | DEBUG | CONNECTION);  // set before init() so that you can see startup messages
 
